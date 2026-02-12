@@ -1,12 +1,10 @@
-## PhD Seminar Slides
+## Deepseek slides for discussion
 
 This repository contains Beamer slides and LaTeX source files
-for a PhD-level seminar.
+for the discussion of the development of the deepseek models.
 
 ### Structure
-- `src/` — LaTeX source
-- `build/` — compiled PDF slides
+- `src/` — LaTeX source and compiled PDFs
 
 ### Compile locally
-```bash
-pdflatex -output-directory=build src/main.tex
+- Compile the slides using `pdftexify`
