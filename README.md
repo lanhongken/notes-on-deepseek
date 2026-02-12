@@ -1,7 +1,6 @@
-## Deepseek slides for discussion
+## DeepSeek Discussion Slides
 
-This repository contains Beamer slides and LaTeX source files
-for the discussion of the development of the deepseek models.
+Beamer slides and LaTeX source files for a discussion of DeepSeek model development.
 
 ### Structure
 - `src/` — LaTeX source and compiled PDFs
