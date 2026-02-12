@@ -1,0 +1,72 @@
+\section{Conditional Memory}
+
+\frame{\frametitle{Reasoning–Retrieval Decomposition in Language Models}
+ \begin{itemize}
+   \item \lit{\citet{cheng_et_2026_cm}} formalize language modeling as comprising two qualitatively distinct sub-tasks: \alert{compositional reasoning} and \alert{knowledge retrieval}
+   \item \lit{\citepos{vaswani_et_2017}} Transformer lacks an explicit retrieval mechanism; both reasoning and retrieval are implemented via matrix computation
+   \item Attention-based computation scales as \alert{$\mathcal{O}(T^2 d)$}, where $T$ denotes sequence length and $d$ model dimension, whereas classical $n$-gram lookup achieves \alert{$\mathcal{O}(1)$} access
+   \item \lit{\citet{cheng_et_2026_cm}} introduce the \alert{Engram module} to decouple retrieval from computation, enabling a more efficient allocation of computational budget across the two sub-tasks
+ \end{itemize}
+}
+
+
+\frame{\frametitle{Engram Module $1/2$: Retrieving}
+     \begin{itemize}
+         \item $\mathcal{P}$ maps tokens to canonical identifiers, e.g., normalization
+                \begin{align*}
+                  x_t' = \mathcal{P}(x_t),\; t = 1,2,\ldots,T
+                \end{align*}
+         \item Construct suffix $N$-grams as local context descriptors
+               \begin{align*}
+                 g_{t,n} = \left(x_{t-n+1}',\ldots,x_t'\right),\;n = 2,\ldots,N
+               \end{align*}
+         \item Multi-head hashing approximates a large $N$-gram table without explicit enumeration
+               \begin{align*}
+                 z_{t,n,k} = \varphi_{n,k}(g_{t,n}),\; k = 1,\ldots, K
+               \end{align*}
+         \item Retrieve and concatenate learned memory embeddings
+               \begin{align*}
+                 e_{t,n,k}&=E_{n,k}(z_{t,n,k}),\;\forall n,k\\
+                 \mathbf{e}_t &= \begin{bmatrix}
+                                    e_{t,2,1} & \cdots & e_{t,2,K} &\cdots& & e_{t,N,1} & \cdots & e_{t,N,K}
+                                 \end{bmatrix}
+               \end{align*}
+         \item Note, the above retrieval via multi-head hashing requires \alert{$\mathcal{O}(1)$}
+      \end{itemize}
+}
+
+
+\frame{\frametitle{Engram Module $2/2$: Gating}
+ \begin{itemize}
+   \item Let $\mathbf{h}_t$ denote the hidden state from preceding attention layers, the gate measures semantic alignment between current global context and retrieved memory
+       \begin{align*}
+         &\alpha_t = \sigma\left(\frac{\text{RMSNorm}(\mathbf{h}_t)^\top \text{RMSNorm}(\mathbf{k}_t)}{\sqrt{d}}\right),\; \mathbf{k}_t = W_K\mathbf{e}_t
+       \end{align*}
+   \item If memory is irrelevant, $\alpha_t \to 0$. The context-aware gate filters the retrieved memory
+       \begin{align*}
+           \tilde{\mathbf{v}}_t = \alpha_t \mathbf{v}_t,\;\mathbf{v}_t = W_V\mathbf{e}_t
+       \end{align*}
+   \item A short convolution expands expressivity and injects local interaction
+         \begin{align*}
+           \mathbf{Y} = \text{SiLU}(\text{Conv1D}(\text{RMSNorm}(\tilde{\mathbf{V}})))+\tilde{\mathbf{V}}
+         \end{align*}
+   \item Residual structure preserves stability as usual
+ \end{itemize}
+}
+
+\frame{\frametitle{Engram-Augmented Transformer}
+ \begin{itemize}
+   \item Let $\mathbf{X}$ be an input sequence, recall the computation graph of the standard Transformer
+         \begin{align*}
+           \mathbf{B} &= \text{LN}(\mathbf{X}+\text{Attention}(\mathbf{X}))\\
+           \mathbf{H} &= \text{LN}(\mathbf{B}+\text{FFN}(\mathbf{B}))
+         \end{align*}
+   \item Given $\mathbf{H}$, the Engram module takes as well $\mathbf{X}$ to compute $\mathbf{Y}$, and then augments $\mathbf{H}$ through residual connection
+         \begin{align*}
+           \mathbf{Y} & = \text{Engram}(\mathbf{H},\mathbf{X}) \\
+           \mathbf{H} &= \mathbf{H} + \mathbf{Y}
+         \end{align*}
+   \item Followed by the standard attention and MoE. Note that, if the gate suppresses memory, the block reduces to the standard Transformer
+   \item The model can now allocate capacity between computation and retrieval instead of simulating both with depth alone
+ \end{itemize}
+} 

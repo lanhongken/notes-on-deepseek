@@ -1,0 +1,49 @@
+
+\section{Manifold-Constrained Hyper-Connections}
+
+\frame{\frametitle{Hyper-Connections}
+  \begin{itemize}
+    \item Let $x_l\in\mathbb{R}^{n\times C}$ be the $l$-th layer of a ResNet, the recursive structure of hyper-connections across layers proposed by \lit{\cite{zhu_et_2025_hc}} writes
+        \begin{align*}
+          x_{l+1} = \mathcal{H}^{res}_lx_l + \left(\mathcal{H}^{post}_l\right)^\top\mathcal{F}\left(\mathcal{H}^{pre}_lx_l,\mathcal{W}_l\right)
+        \end{align*}
+    \item where $\mathcal{H}^{res}_l\in\mathbb{R}^{n\times n}, \mathcal{H}^{post}_l\in\mathbb{R}^{1\times n}, \mathcal{H}^{pre}_l\in\mathbb{R}^{1\times n}$ are learnable mappings, and $\mathcal{F}:\mathbb{R}^{n\times C}\rightarrow\mathbb{R}^{1\times C}$ denotes the residual function. Iterating forward yields
+        \begin{align*}
+          x_L = \left(\prod_{i=1}^{L-l}\mathcal{H}^{res}_{L-i}\right)x_l
+          + \sum_{i=l}^{L-1}\left(\prod_{j=1}^{L-1-i}\mathcal{H}^{res}_{L-j}\right)\left(\mathcal{H}^{post}_i\right)^\top\mathcal{F}\left(\mathcal{H}^{pre}_ix_i,\mathcal{W}_i\right)
+        \end{align*}
+    \item where $L>l$ indexes the layer deeper than $l$, and $n$ measures the rate expanded from the original layer of dimension $1\times C$.
+  \end{itemize}
+}
+
+\frame{\frametitle{Source of Instability}
+  \begin{itemize}
+    \item As noticed by \lit{\cite{xie_et_2026_mhc}}, the product of the sequence of learnable mapping $\mathcal{H}^{res}_i$ may introduce instability into training
+        \begin{align*}
+          \prod_{i=1}^{L-l}\mathcal{H}^{res}_{L-i} = \mathcal{H}^{res}_{L-1}\mathcal{H}^{res}_{L-2}\ldots\mathcal{H}^{res}_{L-l}
+        \end{align*}
+    \item This can be seen by assuming $\mathcal{H}^{res}_i = \mathcal{H}^{res},\;\forall\;i$---applying the eigenvalue decomposition, the product above rewrites
+        \begin{align*}
+          \left(\mathcal{H}^{res}\right)^{L-l} = D\Lambda^{L-l}D^{-1}
+        \end{align*}
+    \item which is stable only if the largest absolute value of any eigenvalue
+        \begin{align*}
+          \rho\left( \mathcal{H}^{res}\right) =\max \left\{ |\lambda|_1,\ldots,|\lambda|_{L-l} \right\}
+        \end{align*}
+    \item i.e., the spectral radius of $\mathcal{H}^{res}$ is smaller than $1$.
+  \end{itemize}
+}
+
+\frame{\frametitle{Manifold-Constrained Hyper-Connections}
+ \begin{itemize}
+   \item The mHC proposed by \lit{\cite{xie_et_2026_mhc}} ensuring stability in training by restraining $\mathcal{H}^{res}_l$ to be a doubly stochastic matrix, i.e., let $h_{ij}$ be the $i,j$th element of $\mathcal{H}^{res}_l$
+       \begin{align*}
+         \sum_{i}h_{ij}=\sum_{j}h_{ij}=1, \;h_{ij}\geq 0\;\forall i,j
+       \end{align*}
+   \item The mHC is implemented by employing \lit{\citepos{{sinkhorn_knopp_1967}}} method, in essence
+       \begin{align*}
+         M^{(t)} = \mathcal{T}_r\left(\mathcal{T}_c\left(M^{(t-1)}\right)\right),\; M^{(0)}=\exp\left(\mathcal{H}^{res}_l\right)
+       \end{align*}
+   \item where $\mathcal{T}_r, \mathcal{T}_c$ denotes the row, column normalization respectively.
+ \end{itemize}
+} 

@@ -1,0 +1,43 @@
+## LaTeX Auxilary 
+*.aux
+*.log
+*.out
+*.toc
+*.lof
+*.lot
+*.bbl
+*.blg
+*.bcf
+*.run.xml
+
+## Beamer special
+*.nav
+*.snm
+*.vrb
+
+## index / glossary
+*.idx
+*.ilg
+*.ind
+*.glo
+*.gls
+*.ist
+
+## cross-reference synchronization
+*.synctex.gz
+*.synctex
+
+## compilation temps
+*.fls
+*.fdb_latexmk
+
+## dependency 
+*.dep
+
+## complied pdf
+# *.pdf
+
+## winedt backups
+*~
+*.swp
+*.bak

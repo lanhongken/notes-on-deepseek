@@ -1,0 +1,106 @@
+%=================================================================================================================================================
+% Template for Lecture Slides
+%=================================================================================================================================================
+
+\usetheme{Pittsburgh}
+\usefonttheme{structuresmallcapsserif}
+\definecolor{hublue}{cmyk}{1,.6,0,.2}
+\definecolor{hured}{cmyk}{0,.9,.8,.4}
+\definecolor{orchid}{rgb}{0.73, 0.33, 0.83}
+\usecolortheme[cmyk={1,.6,0,.2}]{structure}
+%\setbeamersize{text margin left=0.5cm, text margin right=0.5cm}
+\setbeamercolor{alerted text}{fg=hured}
+\newcommand{\lit}[1]{\textcolor{hublue}{#1}} % color literature with hublue
+\setbeamertemplate{navigation symbols}{}
+\setbeamerfont{frametitle}{size=\large}
+\setbeamerfont{title}{size=\Large}
+\setbeamerfont{date}{size=\small}
+\setbeamertemplate{itemize items}[default]
+\setbeamertemplate{enumerate items}[default]
+\setbeamertemplate{caption}[numbered]
+\setbeamertemplate{sections/subsections in toc}[sections numbered]
+\setbeamertemplate{subsection in toc}[subsections numbered]
+\setbeamertemplate{subsection in toc}{\vspace{1.5ex}\leavevmode\leftskip=3.5em\rlap{\hskip-2em\inserttocsectionnumber.\inserttocsubsectionnumber}\inserttocsubsection\vspace{0.5ex}\par}
+\setbeamercolor{subsection in toc}{fg=hublue}
+\setbeamerfont{subsection in toc}{family=\rmfamily}
+
+
+%\AtBeginSection{\frame{\sectionpage}}
+\AtBeginSection{\frame{\tableofcontents[currentsection]}}
+\AtBeginSubsection{\frame{\tableofcontents[currentsection,currentsubsection]}}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{thmtools}
+\usepackage{amssymb}
+\usepackage{ulem}
+\usepackage{rotating}
+\usepackage{verbatim}
+\usepackage{comment}
+\usepackage{hyperref}
+\usepackage{multirow}
+\usepackage{multicol}
+\usepackage{beamerfoils}
+\usepackage{booktabs}
+\usepackage{mathrsfs}
+\usepackage{pdfpages}
+\usepackage{movie15}
+\usepackage{arydshln} % for dashed lines in arrays
+\usepackage{mathtools}% for norm
+%\usepackage[framed,numbered,autolinebreaks,useliterate]{mcode} % for matlab code
+\usepackage{bbm} % for indicator function etc.
+\usepackage{bbold}
+\usepackage{empheq} % box equations
+\usepackage{tikz}% circle a number
+\newcommand*\circled[1]{\tikz[baseline=(char.base)]{
+            \node[shape=circle,draw,inner sep=2pt] (char) {#1};}}
+
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{fancybox}
+
+\usepackage[most]{tcolorbox}
+
+\setbeamertemplate{blocks}[rounded][shadow=true] % use rounded blocks with standard beamer shadow
+
+
+
+\setbeamertemplate{theorems}[numbered]
+\theoremstyle{definition}
+\newtheorem{exmp}{Example}[section]
+\newtheorem{excursion}{Excursion}[section]
+
+\DeclarePairedDelimiterX{\norm}[1]{\lVert}{\rVert}{#1} % norm
+\DeclareMathOperator{\var}{var} % variance
+\DeclareMathOperator{\std}{std} % variance
+\DeclareMathOperator{\cov}{cov} % covariance
+\DeclareMathOperator{\eig}{eig} % eigenvalue
+\DeclareMathOperator{\vecop}{vec} % eigenvalue
+\DeclareMathOperator{\tr}{tr} % eigenvalue
+\DeclareMathOperator{\diag}{diag} % eigenvalue
+\DeclareMathOperator{\vech}{vech} % eigenvalue
+\DeclareMathOperator{\rank}{rank} % eigenvalue
+\DeclareMathOperator{\prob}{prob} % eigenvalue
+\DeclareMathOperator{\sign}{sign} % eigenvalue
+
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+\makeatletter
+\newcommand{\distas}[1]{\mathbin{\overset{#1}{\kern\z@\sim}}}%
+\newsavebox{\mybox}\newsavebox{\mysim}
+\newcommand{\distras}[1]{%
+  \savebox{\mybox}{\hbox{\kern3pt$\scriptstyle#1$\kern3pt}}%
+  \savebox{\mysim}{\hbox{$\sim$}}%
+  \mathbin{\overset{#1}{\kern\z@\resizebox{\wd\mybox}{\ht\mysim}{$\sim$}}}%
+}
+%\newcommand\harvardand{\&}
+
+% References:
+\usepackage[authoryear,semicolon]{natbib}
+\makeatletter
+\DeclareRobustCommand\citepos
+  {\begingroup\def\NAT@nmfmt##1{{\NAT@up##1's}}%
+   \NAT@swafalse\let\NAT@ctype\z@\NAT@partrue
+   \@ifstar{\NAT@fulltrue\NAT@citetp}{\NAT@fullfalse\NAT@citetp}}
+\makeatother
